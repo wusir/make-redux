@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Provider} from './react-redux'
 import PropTypes from 'prop-types'
 import logo from './logo.svg';
 import './App.css';
@@ -50,20 +51,15 @@ function themeReducer(state, action){
 const store = createStore(themeReducer);
 
 class App extends Component {
-  static childContextTypes = {
-    store: PropTypes.object
-  }
-
-  getChildContext () {
-    return { store }
-  }
-
+  
   render() {
     return (
-      <div className="App">
-        <Header />
-        <Content />
-      </div>
+      <Provider store={store}>
+        <div className="App">
+          <Header />
+          <Content />
+        </div>
+      </Provider>
     );
   }
 }
