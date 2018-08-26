@@ -4,46 +4,21 @@ import {connect} from './react-redux'
 
 class ThemeSwitch extends React.Component{
 
-    static contextTypes ={
-        store: PropTypes.object
-    }
-
-    constructor(){
-        super()
-        this.state = {themeColor: ''}
-    }
-
-    componentWillMount() {
-      const {store} = this.context;
-      store.subscribe(() => this.updateThemeColor());
-      this.updateThemeColor();
-    }
-    
-    updateThemeColor() {
-        const {store} = this.context;
-        const state = store.getState();
-        this.setState({themeColor: state.themeColor});
-    }
-
-    handleRedClick(){
-        const {store} = this.context;
-        store.dispatch({type: 'CHANGE_THEME', themeColor: 'red'});
-    }
-
-    handleBlueClick = ()=>{
-        const {store} = this.context;
-        store.dispatch({type: 'CHANGE_THEME', themeColor: 'blue'});
+    handleSwitchColor (color){
+        if (this.props.onSwitchColor) {
+            this.props.onSwitchColor(color)
+        }
     }
 
     render(){
         return (
             <div>
-                <button style={{ color: this.state.themeColor }}
-                    onClick={this.handleRedClick.bind(this)}>
+                <button style={{ color: this.props.themeColor }}
+                    onClick={this.handleSwitchColor.bind(this, 'red')}>
                     红色
                 </button>
-                <button style={{ color: this.state.themeColor }}
-                    onClick={this.handleBlueClick}>
+                <button style={{ color: this.props.themeColor }}
+                    onClick={this.handleSwitchColor.bind(this, 'blue')}>
                     蓝色
                 </button>
             </div>
@@ -51,4 +26,18 @@ class ThemeSwitch extends React.Component{
     }
 }
 
-export default ThemeSwitch;
+const mapStateToProps = (state) => {
+    return {
+        themeColor: state.themeColor
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onSwitchColor: (color) => {
+            dispatch({ type: 'CHANGE_THEME', themeColor: color })
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ThemeSwitch);
