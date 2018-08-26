@@ -21,13 +21,23 @@ const appState = {
 function stateChange(state, action){
     switch(action.type){
         case 'UPDATE_HEADER_TEXT':
-            state.header.text = action.text;
-            break;
+            return {
+                ...state,
+                header: {
+                    ...state.header,
+                    text: action.text,
+                }
+            };
         case 'UPDATE_HEADER_COLOR':
-            state.header.color = action.color;
-            break;
+            return {
+                ...state,
+                header: {
+                    ...state.header,
+                    color: action.color,
+                }
+            };
         default:
-            break;
+            return state;
     }
 }
 
@@ -39,10 +49,10 @@ function createStore(state, stateChange){
     var subscribe = (renderState) => listeners.push(renderState);
 
     var dispatch = (action) => {
-        stateChange(state, action);
+        state = stateChange(state, action);
 
         listeners.forEach((listener) =>{
-            listener(state);
+            listener();
         });
     }
 
@@ -53,28 +63,42 @@ function createStore(state, stateChange){
     };
 }
 
-function renderApp(state){
+function renderApp(newState, oldState = {}){
+    if(newState === oldState){
+        return;
+    }
     console.log('render App');
-    renderHeader(state.header);
-    renderContent(state.content);
+    renderHeader(newState.header, oldState.header);
+    renderContent(newState.content, oldState.content);
 }
 
-function renderHeader(header){
+function renderHeader(newHeader, oldHeader = {}){
+    if(newHeader === oldHeader){
+        return;
+    }
     console.log('render Header');
     var headerElem = document.getElementById('header');
-    headerElem.innerHTML = header.text;
-    headerElem.style.color = header.color;
+    headerElem.innerHTML = newHeader.text;
+    headerElem.style.color = newHeader.color;
 }
 
-function renderContent(content){
+function renderContent(newContent, oldContent = {}){
+    if(newContent === oldContent){
+        return;
+    }
     console.log('render Content');
     var contentElem = document.getElementById('content');
-    contentElem.innerHTML = content.text;
-    contentElem.style.color = content.color;
+    contentElem.innerHTML = newContent.text;
+    contentElem.style.color = newContent.color;
 }
 
 var store = createStore(appState, stateChange);
-store.subscribe((state) => renderApp(state));
+var oldState = store.getState();
+store.subscribe(() => {
+    var newState = store.getState();
+    renderApp(newState, oldState)
+    oldState = newState;
+});
 
 renderApp(store.getState());
 store.dispatch({type: 'UPDATE_HEADER_TEXT', text: '修改后的标题'});
