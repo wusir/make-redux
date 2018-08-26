@@ -1,35 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {connect} from './react-redux'
 
 class Header extends React.Component{
-    static contextTypes ={
-        store: PropTypes.object
-    }
-
-    constructor(){
-        super()
-        this.state = {themeColor: ''}
-    }
-
-    componentWillMount() {
-      const {store} = this.context;
-      store.subscribe(() => this.updateThemeColor());
-      this.updateThemeColor();
-    }
-    
-    updateThemeColor() {
-        const {store} = this.context;
-        const state = store.getState();
-        this.setState({themeColor: state.themeColor});
-    }
+    static propTypes = {
+        themeColor: PropTypes.string
+      }
 
     render(){
         return (
             <div>
-                <h1 style={{ color: this.state.themeColor }}>标题</h1>
+                <h1 style={{ color: this.props.themeColor }}>标题</h1>
             </div>
         );
     }
 }
 
-export default Header;
+//将state转换为props传递给组件，这里的state是通过store.getState()获取的，代码全局性store，用于在
+//组件间实现状态的复用
+const mapStateToProps = (state) => {
+    return {
+        themeColor: state.themeColor
+    };
+}
+
+export default connect(mapStateToProps)(Header);
