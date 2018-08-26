@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
-//ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
 //registerServiceWorker();
 
 function stateChange(state, action){
@@ -108,6 +108,6 @@ store.subscribe(() => {
     oldState = newState;
 });
 
-renderApp(store.getState());
-store.dispatch({type: 'UPDATE_HEADER_TEXT', text: '修改后的标题'});
-store.dispatch({type: 'UPDATE_HEADER_COLOR', color: 'green'});
+//renderApp(store.getState());
+//store.dispatch({type: 'UPDATE_HEADER_TEXT', text: '修改后的标题'});
+//store.dispatch({type: 'UPDATE_HEADER_COLOR', color: 'green'});
